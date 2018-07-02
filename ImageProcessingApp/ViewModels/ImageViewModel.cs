@@ -13,9 +13,9 @@ using System.Windows.Media.Imaging;
 using ImageProcessingLibrary;
 
 namespace ImageProcessingApp {
-    class ImageViewModel : ObservableObject {
+    public class ImageViewModel : ObservableObject {
 
-        ImageModel _imageModel;
+        private ImageModel _imageModel;
 
         BitmapImage _imageToDisplay;
         public BitmapImage ImageToDisplay {
@@ -72,10 +72,6 @@ namespace ImageProcessingApp {
             }
         }
 
-        public ImageViewModel() {
-            ImagePath = @"C:\test\image.jpg";
-        }
-
         BitmapImage BitmapToImageSource(Bitmap bitmap) {
             using (MemoryStream memory = new MemoryStream()) {
                 bitmap.Save(memory, ImageFormat.Bmp);
@@ -108,40 +104,48 @@ namespace ImageProcessingApp {
 
         private void LoadImage() {
             if (string.IsNullOrWhiteSpace(ImagePath)) return;
-            //processing = new ImageProcessing(ImagePath);
             _imageModel = new ImageModel(ImagePath);
             UpdateDisplayImage();
+            UpdateImageInfoLabels();
+        }
+
+        private void UpdateImageInfoLabels() {
             ImageWidth = _imageModel.ImageWidth.ToString() + "px";
             ImageHeight = _imageModel.ImageHeight.ToString() + "px";
             TimeTaken = "-";
         }
 
         private void GrayscaleImage() {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            var sw = StartTimer();
             _imageModel.GrayscaleImage();
-            sw.Stop();
-            TimeTaken = sw.ElapsedMilliseconds.ToString() + "ms";
+            MeasureAndDisplayTime(sw);
             UpdateDisplayImage();
         }
 
         private async void GrayscaleImageAsync() {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            var sw = StartTimer();
             await _imageModel.GrayscaleImageAsync();
-            sw.Stop();
-            TimeTaken = sw.ElapsedMilliseconds.ToString() + "ms";
+            MeasureAndDisplayTime(sw);
             UpdateDisplayImage();
         }
 
         private void GrayscaleEncodedImage() {
             _imageModel = new ImageModel(ImagePath);
+            var sw = StartTimer();
+            _imageModel.GrayscaleEncodedImage();
+            MeasureAndDisplayTime(sw);
+            UpdateDisplayImage();
+        }
+
+        private Stopwatch StartTimer() {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            _imageModel.GrayscaleEncodedImage();
+            return sw;
+        }
+
+        private void MeasureAndDisplayTime(Stopwatch sw) {
             sw.Stop();
             TimeTaken = sw.ElapsedMilliseconds.ToString() + "ms";
-            UpdateDisplayImage();
         }
 
         private void UpdateDisplayImage() {
