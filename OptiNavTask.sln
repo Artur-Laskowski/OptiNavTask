@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessingLibrary", "I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessingApp", "ImageProcessingApp\ImageProcessingApp.csproj", "{20173C10-D7D2-4045-8332-F15E2923BA15}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{3BA2095E-1B08-440B-9729-4D8351BBD2C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{20173C10-D7D2-4045-8332-F15E2923BA15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20173C10-D7D2-4045-8332-F15E2923BA15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20173C10-D7D2-4045-8332-F15E2923BA15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BA2095E-1B08-440B-9729-4D8351BBD2C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BA2095E-1B08-440B-9729-4D8351BBD2C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BA2095E-1B08-440B-9729-4D8351BBD2C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BA2095E-1B08-440B-9729-4D8351BBD2C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
