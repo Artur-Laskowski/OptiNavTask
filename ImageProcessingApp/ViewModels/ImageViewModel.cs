@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -38,10 +39,41 @@ namespace ImageProcessingApp {
             }
         }
 
+        string _timeTaken;
+        public string TimeTaken {
+            get {
+                return _timeTaken;
+            }
+            set {
+                _timeTaken = value;
+                RaisePropertyChanged("TimeTaken");
+            }
+        }
+
+        string _imageWidth;
+        public string ImageWidth {
+            get {
+                return _imageWidth;
+            }
+            set {
+                _imageWidth = value;
+                RaisePropertyChanged("ImageWidth");
+            }
+        }
+
+        string _imageHeight;
+        public string ImageHeight {
+            get {
+                return _imageHeight;
+            }
+            set {
+                _imageHeight = value;
+                RaisePropertyChanged("ImageHeight");
+            }
+        }
+
         public ImageViewModel() {
             ImagePath = @"C:\test\image.jpg";
-            //ImageToDisplay = new BitmapImage(
-            //    new Uri(@"/ImageProcessingApp;component/Resources/image.jpg", UriKind.Relative));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -80,19 +112,44 @@ namespace ImageProcessingApp {
             get { return new DelegateCommand(GrayscaleImageAsync); }
         }
 
+        public ICommand GrayscaleEncodedCommand {
+            get { return new DelegateCommand(GrayscaleEncodedImage); }
+        }
+
         private void LoadImage() {
             if (string.IsNullOrWhiteSpace(ImagePath)) return;
             processing = new ImageProcessing(ImagePath);
             UpdateDisplayImage();
+            ImageWidth = processing.ProcessedImage.Width.ToString() + "px";
+            ImageHeight = processing.ProcessedImage.Height.ToString() + "px";
+            TimeTaken = "-";
         }
 
         private void GrayscaleImage() {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             processing.Grayscale();
+            sw.Stop();
+            TimeTaken = sw.ElapsedMilliseconds.ToString() + "ms";
             UpdateDisplayImage();
         }
 
         private async void GrayscaleImageAsync() {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             await processing.GrayscaleAsync();
+            sw.Stop();
+            TimeTaken = sw.ElapsedMilliseconds.ToString() + "ms";
+            UpdateDisplayImage();
+        }
+
+        private void GrayscaleEncodedImage() {
+            processing = new ImageProcessing(ImagePath);
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            processing.GrayscaleEncodedImage();
+            sw.Stop();
+            TimeTaken = sw.ElapsedMilliseconds.ToString() + "ms";
             UpdateDisplayImage();
         }
 
