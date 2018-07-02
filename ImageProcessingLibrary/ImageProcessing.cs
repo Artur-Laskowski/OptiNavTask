@@ -22,18 +22,10 @@ namespace ImageProcessingLibrary
         private RawDataConverter RawDataManager;
 
         ColorRatios Ratios;
-        public double RedRatio { get; private set; }
-        public double GreenRatio { get; private set; }
-        public double BlueRatio { get; private set; }
 
         public ImageProcessing(string filePath, int tasksCount) {
             TasksCount = tasksCount;
             LoadImageAsBitmap(filePath);
-
-            //default ratios
-            RedRatio = 0.2126;
-            GreenRatio = 0.7152;
-            BlueRatio = 0.0722;
 
             Ratios = new ColorRatios {
                 RedRatio = 0.2126,
@@ -100,9 +92,9 @@ namespace ImageProcessingLibrary
             for (int x = 0; x < ProcessedImage.Width; x++) {
                 for (int y = 0; y < ProcessedImage.Height; y++) {
                     Color pixel = ProcessedImage.GetPixel(x, y);
-                    double r = pixel.R * RedRatio;
-                    double g = pixel.G * GreenRatio;
-                    double b = pixel.B * BlueRatio;
+                    double r = pixel.R * Ratios.RedRatio;
+                    double g = pixel.G * Ratios.GreenRatio;
+                    double b = pixel.B * Ratios.BlueRatio;
                     byte gray = (byte)(r + g + b);
                     Color newColor = Color.FromArgb(gray, gray, gray);
                     ProcessedImage.SetPixel(x, y, newColor);
