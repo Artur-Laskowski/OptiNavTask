@@ -11,7 +11,7 @@ namespace ImageProcessingLibrary {
 
         private byte* PixelData;
         private BitmapData RawData;
-        private int PixelSize;
+        private int Depth;
         private ColorRatios Ratios;
 
         private int RowBytesCount;
@@ -21,8 +21,8 @@ namespace ImageProcessingLibrary {
             RawData = processedImage.LockBits(bounds, ImageLockMode.ReadWrite, processedImage.PixelFormat);
             PixelData = (byte*)RawData.Scan0.ToPointer();
 
-            PixelSize = Image.GetPixelFormatSize(RawData.PixelFormat) / 8;
-            RowBytesCount = bounds.Width * PixelSize;
+            Depth = Image.GetPixelFormatSize(RawData.PixelFormat) / 8;
+            RowBytesCount = bounds.Width * Depth;
             if (RowBytesCount % 4 != 0) {
                 RowBytesCount = 4 * ((RowBytesCount / 4) + 1);
             }
@@ -30,7 +30,10 @@ namespace ImageProcessingLibrary {
         }
 
         public void ConvertColor(int index) {
-            byte* address = PixelData + index * PixelSize;
+            if (index > RawData.Height * RawData.Width * Depth)
+                throw new IndexOutOfRangeException();
+
+            byte* address = PixelData + index * Depth;
             double b = *address * Ratios.BlueRatio;
             double g = *(address + 1) * Ratios.GreenRatio;
             double r = *(address + 2) * Ratios.RedRatio;
