@@ -16,7 +16,7 @@ namespace ImageProcessingLibrary
     }
 
     public class ImageProcessing {
-        private Bitmap ProcessedImage { get; set; }
+        public Bitmap ProcessedImage { get; private set; }
         public int TasksCount { get; set; }
 
         private RawDataConverter RawDataManager;
