@@ -25,13 +25,21 @@ namespace ConsoleApp1 {
             await ip.GrayscaleAsync();
             sw.Stop();
             Console.WriteLine($"ended async: {sw.ElapsedMilliseconds}ms");
-
+            /*
             ip = new ImageProcessing(@"C:\test\image2.jpg");
             Console.WriteLine("starting sync");
             sw.Start();
             ip.Grayscale();
             sw.Stop();
             Console.WriteLine($"ended sync: {sw.ElapsedMilliseconds}ms");
+            
+            ip = new ImageProcessing(@"C:\test\image2.jpg");
+            Console.WriteLine("starting encoded");
+            sw.Start();
+            ip.GrayscaleEncodedImage();
+            sw.Stop();
+            Console.WriteLine($"ended encoded: {sw.ElapsedMilliseconds}ms");*/
+
             ip.SaveImage(@"C:\test\newImage2.jpg");
         }
     }
