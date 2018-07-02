@@ -1,0 +1,24 @@
+﻿<Window x:Class="ImageProcessingApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageProcessingApp"
+        mc:Ignorable="d"
+        Title="ImageProcessingApp" ResizeMode="NoResize" Height="450" Width="800">
+
+    <Window.DataContext>
+        <local:ImageViewModel />
+    </Window.DataContext>
+    
+    <Grid>
+        <Button x:Name="LoadButton" Content="Load" HorizontalAlignment="Left" Margin="47,10,0,0" VerticalAlignment="Top" Width="75" Command="{Binding LoadImageCommand}"/>
+        <Image x:Name="ImageDisplay" HorizontalAlignment="Left" Height="399" Margin="155,10,0,0" VerticalAlignment="Top" Width="627" Source="{Binding ImageToDisplay}"/>
+        <Button x:Name="GrayscaleButton" Content="Grayscale" HorizontalAlignment="Left" Margin="47,71,0,0" VerticalAlignment="Top" Width="75" Command="{Binding GrayscaleCommand}"/>
+        <Button x:Name="GrayscaleAsyncButton" Content="Async grayscale" HorizontalAlignment="Left" Margin="34,113,0,0" VerticalAlignment="Top" Width="103" Height="26" Command="{Binding GrayscaleAsyncCommand}"/>
+        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Margin="47,165,0,0" VerticalAlignment="Top" Width="75"/>
+        <TextBox x:Name="ImagePathTextbox" HorizontalAlignment="Left" Height="23" Margin="10,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="140" Text="{Binding ImagePath, UpdateSourceTrigger=PropertyChanged}"/>
+        <Label HorizontalAlignment="Left" Margin="47,203,0,0" VerticalAlignment="Top" Content="{Binding Test}"/>
+
+    </Grid>
+</Window>
