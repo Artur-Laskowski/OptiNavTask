@@ -56,7 +56,6 @@ namespace ImageProcessingLibrary
         }
         
         public void SaveImage(string newFilePath) {
-            RawDataManager.SaveRawDataToBitmap(ProcessedImage);
             ProcessedImage.Save(newFilePath);
         }
 
