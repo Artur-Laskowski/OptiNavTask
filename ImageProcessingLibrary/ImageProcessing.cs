@@ -21,6 +21,7 @@ namespace ImageProcessingLibrary
 
         private RawDataConverter RawDataManager;
 
+        ColorRatios Ratios;
         public double RedRatio { get; private set; }
         public double GreenRatio { get; private set; }
         public double BlueRatio { get; private set; }
@@ -34,18 +35,14 @@ namespace ImageProcessingLibrary
             GreenRatio = 0.7152;
             BlueRatio = 0.0722;
 
-            RawDataManager = new RawDataConverter(ProcessedImage, new ColorRatios {
-                BlueRatio = BlueRatio,
-                RedRatio = RedRatio,
-                GreenRatio = GreenRatio,
-            });
+            Ratios = new ColorRatios {
+                RedRatio = 0.2126,
+                GreenRatio = 0.7152,
+                BlueRatio = 0.0722,
+            };
         }
 
         public ImageProcessing(string filePath) : this(filePath, Environment.ProcessorCount) {
-
-        }
-
-        public ImageProcessing() {
 
         }
 
@@ -68,36 +65,39 @@ namespace ImageProcessingLibrary
         }
 
         public void Grayscale() {
-            int totalLength = ProcessedImage.Height * ProcessedImage.Width;
-            ProcessSegment(0, totalLength);
+            using (RawDataManager = new RawDataConverter(ProcessedImage, Ratios)) {
+                int totalLength = ProcessedImage.Height * ProcessedImage.Width;
+                ProcessSegment(0, totalLength);
+            }
         }
 
         public async Task GrayscaleAsync() {
-            int totalLength = ProcessedImage.Height * ProcessedImage.Width;
-            int chunkLength = totalLength / TasksCount;
+            using (RawDataManager = new RawDataConverter(ProcessedImage, Ratios)) {
+                int totalLength = ProcessedImage.Height * ProcessedImage.Width;
+                int chunkLength = totalLength / TasksCount;
 
-            int numberOfTasks = TasksCount;
-            if (ProcessedImage.Height < TasksCount)
-                numberOfTasks = 1;
+                int numberOfTasks = TasksCount;
+                if (ProcessedImage.Height < TasksCount)
+                    numberOfTasks = 1;
 
-            Task[] tasks = new Task[numberOfTasks];
+                Task[] tasks = new Task[numberOfTasks];
 
-            for (int i = 0; i < TasksCount; i++) {
-                int startIndex = i * chunkLength;
-                int length;
-                if (i == TasksCount - 1) {
-                    length = totalLength - startIndex;
-                } else {
-                    length = chunkLength;
+                for (int i = 0; i < TasksCount; i++) {
+                    int startIndex = i * chunkLength;
+                    int length;
+                    if (i == TasksCount - 1) {
+                        length = totalLength - startIndex;
+                    } else {
+                        length = chunkLength;
+                    }
+                    tasks[i] = Task.Run(() => ProcessSegment(startIndex, length));
                 }
-                tasks[i] = Task.Run(() => ProcessSegment(startIndex, length));
-            }
 
-            await Task.WhenAll(tasks);
+                await Task.WhenAll(tasks);
+            }
         }
 
         public void GrayscaleEncodedImage() {
-            //RawDataManager.SaveRawDataToBitmap(ProcessedImage);
             for (int x = 0; x < ProcessedImage.Width; x++) {
                 for (int y = 0; y < ProcessedImage.Height; y++) {
                     Color pixel = ProcessedImage.GetPixel(x, y);

@@ -7,18 +7,22 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ImageProcessingLibrary {
-    internal unsafe class RawDataConverter {
+    internal unsafe class RawDataConverter : IDisposable {
 
         private byte* PixelData;
         private BitmapData RawData;
         private int Depth;
         private ColorRatios Ratios;
+        private Bitmap OriginalBitmap;
+        private bool Locked;
 
         private int RowBytesCount;
 
         public RawDataConverter(Bitmap processedImage, ColorRatios ratios) {
+            OriginalBitmap = processedImage;
             Rectangle bounds = new Rectangle(Point.Empty, processedImage.Size);
             RawData = processedImage.LockBits(bounds, ImageLockMode.ReadWrite, processedImage.PixelFormat);
+            Locked = true;
             PixelData = (byte*)RawData.Scan0.ToPointer();
 
             Depth = Image.GetPixelFormatSize(RawData.PixelFormat) / 8;
@@ -43,8 +47,19 @@ namespace ImageProcessingLibrary {
             *(address + 2) = gray;
         }
 
-        public void SaveRawDataToBitmap(Bitmap output) {
-            output.UnlockBits(RawData);
+        public void Dispose() {
+            if (!Locked)
+                return;
+            OriginalBitmap.UnlockBits(RawData);
+            Locked = false;
         }
+
+        public void SaveRawDataToBitmap(Bitmap output) {
+            if (!Locked)
+                return;
+            output.UnlockBits(RawData);
+            Locked = false;
+        }
+
     }
 }
