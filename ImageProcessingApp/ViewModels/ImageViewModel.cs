@@ -13,9 +13,9 @@ using System.Windows.Media.Imaging;
 using ImageProcessingLibrary;
 
 namespace ImageProcessingApp {
-    class ImageViewModel : INotifyPropertyChanged {
+    class ImageViewModel : ObservableObject {
 
-        private ImageProcessing processing;
+        ImageModel _imageModel;
 
         BitmapImage _imageToDisplay;
         public BitmapImage ImageToDisplay {
@@ -24,7 +24,7 @@ namespace ImageProcessingApp {
             }
             set {
                 _imageToDisplay = value;
-                RaisePropertyChanged("ImageToDisplay");
+                RaisePropertyChangedEvent("ImageToDisplay");
             }
         }
 
@@ -35,7 +35,7 @@ namespace ImageProcessingApp {
             }
             set {
                 _imagePath = value;
-                RaisePropertyChanged("ImagePath");
+                RaisePropertyChangedEvent("ImagePath");
             }
         }
 
@@ -46,7 +46,7 @@ namespace ImageProcessingApp {
             }
             set {
                 _timeTaken = value;
-                RaisePropertyChanged("TimeTaken");
+                RaisePropertyChangedEvent("TimeTaken");
             }
         }
 
@@ -57,7 +57,7 @@ namespace ImageProcessingApp {
             }
             set {
                 _imageWidth = value;
-                RaisePropertyChanged("ImageWidth");
+                RaisePropertyChangedEvent("ImageWidth");
             }
         }
 
@@ -68,22 +68,12 @@ namespace ImageProcessingApp {
             }
             set {
                 _imageHeight = value;
-                RaisePropertyChanged("ImageHeight");
+                RaisePropertyChangedEvent("ImageHeight");
             }
         }
 
         public ImageViewModel() {
             ImagePath = @"C:\test\image.jpg";
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChanged(string propertyName) {
-            // take a copy to prevent thread issues
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
 
         BitmapImage BitmapToImageSource(Bitmap bitmap) {
@@ -118,17 +108,18 @@ namespace ImageProcessingApp {
 
         private void LoadImage() {
             if (string.IsNullOrWhiteSpace(ImagePath)) return;
-            processing = new ImageProcessing(ImagePath);
+            //processing = new ImageProcessing(ImagePath);
+            _imageModel = new ImageModel(ImagePath);
             UpdateDisplayImage();
-            ImageWidth = processing.ProcessedImage.Width.ToString() + "px";
-            ImageHeight = processing.ProcessedImage.Height.ToString() + "px";
+            ImageWidth = _imageModel.ImageWidth.ToString() + "px";
+            ImageHeight = _imageModel.ImageHeight.ToString() + "px";
             TimeTaken = "-";
         }
 
         private void GrayscaleImage() {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            processing.Grayscale();
+            _imageModel.GrayscaleImage();
             sw.Stop();
             TimeTaken = sw.ElapsedMilliseconds.ToString() + "ms";
             UpdateDisplayImage();
@@ -137,24 +128,24 @@ namespace ImageProcessingApp {
         private async void GrayscaleImageAsync() {
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            await processing.GrayscaleAsync();
+            await _imageModel.GrayscaleImageAsync();
             sw.Stop();
             TimeTaken = sw.ElapsedMilliseconds.ToString() + "ms";
             UpdateDisplayImage();
         }
 
         private void GrayscaleEncodedImage() {
-            processing = new ImageProcessing(ImagePath);
+            _imageModel = new ImageModel(ImagePath);
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            processing.GrayscaleEncodedImage();
+            _imageModel.GrayscaleEncodedImage();
             sw.Stop();
             TimeTaken = sw.ElapsedMilliseconds.ToString() + "ms";
             UpdateDisplayImage();
         }
 
         private void UpdateDisplayImage() {
-            ImageToDisplay = BitmapToImageSource(processing.ProcessedImage);
+            ImageToDisplay = BitmapToImageSource(_imageModel.ImageBitmap);
         }
     }
 }
