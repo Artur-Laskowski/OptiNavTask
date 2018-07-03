@@ -5,16 +5,20 @@ using ImageProcessingLibrary;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 using Moq;
+using System.Windows;
 
 namespace UnitTests {
     [TestClass]
     public class ViewModelTests {
+
+        Func<string, MessageBoxResult> mboxMock = (string message) => { throw new Exception(); };
+
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(Exception))]
         public void LoadImage_IncorrectPath_ArgumentException() {
             // arrange
             var path = @"incorrectPath";
-            var ivm = new ImageViewModel();
+            var ivm = new ImageViewModel(mboxMock);
             ivm.ImagePath = path;
 
             // act
@@ -23,11 +27,11 @@ namespace UnitTests {
             // assert
             //exception
         }
-        
+
         [TestMethod]
         public void LoadImage_PathIsEmpty_PropertiesNotSet() {
             //arrange
-            var ivm = new ImageViewModel();
+            var ivm = new ImageViewModel(mboxMock);
 
             //act
             ivm.LoadImageCommand.Execute(null);
@@ -38,16 +42,17 @@ namespace UnitTests {
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
+        [ExpectedException(typeof(Exception))]
         public void Grayscale_ImageNotSet_Exception() {
             //arrange
-            var ivm = new ImageViewModel();
+            var ivm = new ImageViewModel(mboxMock);
 
             //act
             ivm.GrayscaleCommand.Execute(null);
-            
+
             //assert
             //exception
         }
+        //not much else to be tested in viewmodel...
     }
 }
