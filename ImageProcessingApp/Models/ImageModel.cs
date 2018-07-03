@@ -39,10 +39,15 @@ namespace ImageProcessingApp {
             _processing.GrayscaleEncodedImage();
         }
 
+        public void SaveImage(string filePath) {
+            _processing.SaveImage(filePath);
+        }
+
         public Bitmap ImageBitmap {
             get {
                 return _processing.ProcessedImage;
             }
         }
+
     }
 }

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using ImageProcessingLibrary;
@@ -15,6 +16,15 @@ using ImageProcessingLibrary;
 namespace ImageProcessingApp {
     public class ImageViewModel : ObservableObject {
 
+        public ImageViewModel() {
+            _imageLoaded = false;
+        }
+
+        public ImageViewModel(Func<string, MessageBoxResult> userNotification) : this() {
+            _userNotification = userNotification;
+        }
+
+        private Func<string, MessageBoxResult> _userNotification = MessageBox.Show;
         private ImageModel _imageModel;
 
         BitmapImage _imageToDisplay;
@@ -36,6 +46,17 @@ namespace ImageProcessingApp {
             set {
                 _imagePath = value;
                 RaisePropertyChangedEvent("ImagePath");
+            }
+        }
+
+        string _savePath;
+        public string SavePath {
+            get {
+                return _savePath;
+            }
+            set {
+                _savePath = value;
+                RaisePropertyChangedEvent("SavePath");
             }
         }
 
@@ -72,6 +93,17 @@ namespace ImageProcessingApp {
             }
         }
 
+        bool _imageLoaded;
+        public bool ImageLoaded {
+            get {
+                return _imageLoaded;
+            }
+            set {
+                _imageLoaded = value;
+                RaisePropertyChangedEvent("ImageLoaded");
+            }
+        }
+
         BitmapImage BitmapToImageSource(Bitmap bitmap) {
             using (MemoryStream memory = new MemoryStream()) {
                 bitmap.Save(memory, ImageFormat.Bmp);
@@ -102,11 +134,38 @@ namespace ImageProcessingApp {
             get { return new DelegateCommand(GrayscaleEncodedImage); }
         }
 
+        public ICommand SaveImageCommand {
+            get { return new DelegateCommand(SaveImage); }
+        }
+
         private void LoadImage() {
             if (string.IsNullOrWhiteSpace(ImagePath)) return;
-            _imageModel = new ImageModel(ImagePath);
-            UpdateDisplayImage();
-            UpdateImageInfoLabels();
+            try {
+                _imageModel = new ImageModel(ImagePath);
+                UpdateDisplayImage();
+                UpdateImageInfoLabels();
+                ImageLoaded = true;
+            }
+            catch (ArgumentException) {
+                _userNotification("Incorrect path specified");
+            }
+            catch (Exception e) {
+                _userNotification("Error encountered while loading file");
+                _userNotification(e.Message);
+            }
+        }
+
+        private void SaveImage() {
+            if (string.IsNullOrWhiteSpace(SavePath)) return;
+            try {
+                _imageModel.SaveImage(SavePath);
+                _userNotification("Successfuly saved the image");
+            } catch (ArgumentException) {
+                _userNotification("Incorrect path specified");
+            } catch (Exception e) {
+                _userNotification("Error encountered while loading file");
+                _userNotification(e.Message);
+            }
         }
 
         private void UpdateImageInfoLabels() {
@@ -116,25 +175,40 @@ namespace ImageProcessingApp {
         }
 
         private void GrayscaleImage() {
-            var sw = StartTimer();
-            _imageModel.GrayscaleImage();
-            MeasureAndDisplayTime(sw);
-            UpdateDisplayImage();
+            try {
+                var sw = StartTimer();
+                _imageModel.GrayscaleImage();
+                MeasureAndDisplayTime(sw);
+                UpdateDisplayImage();
+            }
+            catch (NullReferenceException e) {
+                _userNotification("Image is not loaded");
+            }
         }
 
         private async void GrayscaleImageAsync() {
-            var sw = StartTimer();
-            await _imageModel.GrayscaleImageAsync();
-            MeasureAndDisplayTime(sw);
-            UpdateDisplayImage();
-        }
+            try {
+                var sw = StartTimer();
+                await _imageModel.GrayscaleImageAsync();
+                MeasureAndDisplayTime(sw);
+                UpdateDisplayImage();
+            }
+            catch (NullReferenceException e) {
+                _userNotification("Image is not loaded");
+            }
+}
 
         private void GrayscaleEncodedImage() {
-            _imageModel = new ImageModel(ImagePath);
-            var sw = StartTimer();
-            _imageModel.GrayscaleEncodedImage();
-            MeasureAndDisplayTime(sw);
-            UpdateDisplayImage();
+            try {
+                _imageModel = new ImageModel(ImagePath);
+                var sw = StartTimer();
+                _imageModel.GrayscaleEncodedImage();
+                MeasureAndDisplayTime(sw);
+                UpdateDisplayImage();
+            }
+            catch (NullReferenceException e) {
+                _userNotification("Image is not loaded");
+            }
         }
 
         private Stopwatch StartTimer() {

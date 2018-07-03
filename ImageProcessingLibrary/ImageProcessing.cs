@@ -51,10 +51,6 @@ namespace ImageProcessingLibrary
             ProcessedImage.Save(newFilePath);
         }
 
-        public void SaveEncodedImage(string newFilePath) {
-            ProcessedImage.Save(newFilePath);
-        }
-
         public void Grayscale() {
             using (RawDataManager = new RawDataConverter(ProcessedImage, Ratios)) {
                 int totalLength = ProcessedImage.Height * ProcessedImage.Width;
