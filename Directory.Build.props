@@ -8,5 +8,6 @@
     <OutputPath>$(BuildDir)/bin/$(Platform)/$(Configuration)</OutputPath>
 
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 </Project>

@@ -4,7 +4,7 @@ using ReactiveUI;
 
 namespace ImageProcessing.UI.Views
 {
-	public partial class MainWindow : ReactiveWindow<MainViewModel>
+	public partial class MainWindow
 	{
 		public MainWindow()
 		{
@@ -13,9 +13,9 @@ namespace ImageProcessing.UI.Views
 
 			this.WhenActivated(disposableRegistration =>
 			{
-				this.OneWayBind(ViewModel,
-					vm => vm.TestText,
-					view => view.TestText.Content)
+				this.BindCommand(ViewModel,
+						vm => vm.Load,
+						view => view.Load)
 					.DisposeWith(disposableRegistration);
 			});
 		}

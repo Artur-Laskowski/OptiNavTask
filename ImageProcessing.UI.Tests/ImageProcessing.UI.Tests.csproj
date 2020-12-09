@@ -20,6 +20,8 @@
     <PackageReference Include="ReactiveUI" />
     <PackageReference Include="ReactiveUI.Testing" />
     <PackageReference Include="ReactiveUI.WPF" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Moq" />
   </ItemGroup>
 
   <ItemGroup>

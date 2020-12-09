@@ -11,6 +11,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Label Name="TestText" />
+        <Button Name="Load">Load</Button>
     </Grid>
 </reactiveui:ReactiveWindow>
