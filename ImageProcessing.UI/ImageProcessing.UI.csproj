@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImageProcessing.Contracts\ImageProcessing.Contracts.csproj" />
+    <ProjectReference Include="..\ImageProcessing.Lib\ImageProcessing.Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI" />
+    <PackageReference Include="ReactiveUI.Events.WPF" />
+    <PackageReference Include="ReactiveUI.WPF" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+</Project>

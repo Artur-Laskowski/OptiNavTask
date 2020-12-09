@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImageProcessing.Contracts\ImageProcessing.Contracts.csproj" />
+    <ProjectReference Include="..\ImageProcessing.Lib\ImageProcessing.Lib.csproj" />
+    <ProjectReference Include="..\ImageProcessing.UI\ImageProcessing.UI.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+  </PropertyGroup>
+
+</Project>
