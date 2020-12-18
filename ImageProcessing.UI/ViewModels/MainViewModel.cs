@@ -5,41 +5,43 @@ using System.Reactive.Linq;
 using System.Windows.Media.Imaging;
 using ImageProcessing.UI.FileLoading;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using Splat;
 
 namespace ImageProcessing.UI.ViewModels
 {
-	public class MainViewModel
+	public class MainViewModel : ReactiveObject
 	{
 		private readonly IImageSelection _ImageSelection;
 
 		public MainViewModel(IImageSelection? imageSelection = null)
 		{
 			imageSelection ??= Locator.Current.GetService<IImageSelection>();
-
 			_ImageSelection = imageSelection;
-			Load = ReactiveCommand.CreateFromObservable(
-				() => Observable.Create<Unit>(LoadImage));
-			Cancel = ReactiveCommand.Create(
-				() => { },
-				Load.IsExecuting);
 
+			Load = ReactiveCommand.CreateFromObservable<Unit, BitmapImage>(
+				_ => Observable.Create<BitmapImage>(LoadImage));
+			Load.Subscribe(image =>
+			{
+				LoadedImage = image;
+			});
 		}
 
-		public ReactiveCommand<Unit, Unit> Load { get; }
-		public ReactiveCommand<Unit, Unit> Cancel { get; }
+		public ReactiveCommand<Unit, BitmapImage> Load { get; }
+
+		[Reactive]
 		public BitmapImage? LoadedImage { get; set; }
 
-
-		private IDisposable LoadImage(IObserver<Unit> observer)
+		private IDisposable LoadImage(IObserver<BitmapImage> observer)
 		{
 			var result = _ImageSelection.SelectImage();
 
 			if (result != null)
 			{
-				LoadedImage = result;
+				observer.OnNext(result);
 			}
-			observer.OnNext(Unit.Default);
+			observer.OnCompleted();
+
 			return Disposable.Empty;
 		}
 	}

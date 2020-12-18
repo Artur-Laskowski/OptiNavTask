@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using System.Reflection;
+using System.Windows;
 using Autofac;
-using Autofac.Core;
 using ImageProcessing.UI.FileLoading;
 using ImageProcessing.UI.ViewModels;
 using ImageProcessing.UI.Views;
@@ -16,14 +16,17 @@ namespace ImageProcessing.UI
 	    {
 		    var container = new ContainerBuilder();
 		    container.RegisterType<MainWindow>().As<IViewFor<MainViewModel>>();
-		    container.RegisterType<ImageSelection>().As<IImageSelection>();
+			container.RegisterType<ImageSelection>().As<IImageSelection>();
 
-			container.UseAutofacDependencyResolver();
+			var resolver = container.UseAutofacDependencyResolver();
 
-			Locator.CurrentMutable.InitializeSplat();
-		    Locator.CurrentMutable.InitializeReactiveUI();
+			resolver.InitializeSplat();
+			resolver.InitializeReactiveUI();
 
-			//Locator.CurrentMutable.Register(() => new ImageSelection(), typeof(IImageSelection));
+			container.RegisterInstance(resolver);
+
+			var scope = container.Build();
+			resolver.SetLifetimeScope(scope);
 	    }
-    }
+	}
 }

@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="ReactiveUI" />
     <PackageReference Include="ReactiveUI.Events.WPF" />
+    <PackageReference Include="ReactiveUI.Fody" />
     <PackageReference Include="ReactiveUI.WPF" />
     <PackageReference Include="Splat.Autofac" />
     <PackageReference Include="Autofac" />

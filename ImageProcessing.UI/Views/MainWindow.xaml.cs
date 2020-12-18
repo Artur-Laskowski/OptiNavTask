@@ -17,6 +17,10 @@ namespace ImageProcessing.UI.Views
 						vm => vm.Load,
 						view => view.Load)
 					.DisposeWith(disposableRegistration);
+				this.OneWayBind(ViewModel,
+						vm => vm.LoadedImage,
+						view => view.LoadedImage.Source)
+					.DisposeWith(disposableRegistration);
 			});
 		}
 	}
