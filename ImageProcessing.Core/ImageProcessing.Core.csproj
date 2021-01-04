@@ -7,7 +7,12 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DryIoc.Dll" />
+  </ItemGroup>
 
 </Project>

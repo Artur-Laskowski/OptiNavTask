@@ -4,7 +4,9 @@ using ReactiveUI;
 
 namespace ImageProcessing.UI.Views
 {
-	public partial class MainWindow
+#nullable disable
+	public partial class MainWindow : ReactiveWindow<MainViewModel>
+#nullable enable
 	{
 		public MainWindow()
 		{
